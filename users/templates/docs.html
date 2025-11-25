@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RcamAuth API Docs</title>
+    <style>
+        :root {
+            /* Palette - Slate/Dark Theme */
+            --bg-body: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #1e293b;
+            --bg-code: #020617;
+            
+            --border-subtle: #334155;
+            --border-accent: #38bdf8;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-accent: #38bdf8;
+            
+            --color-error: #f43f5e;     /* Red */
+            --color-warning: #fbbf24;   /* Amber */
+            --color-success: #34d399;   /* Emerald */
+            --color-info: #60a5fa;      /* Blue */
+        }
+
+        * { box-sizing: border-box; outline: none; }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Scrollbar Customization --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-accent);
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand span { color: #fff; }
+
+        .nav-link {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--text-main);
+        }
+        
+        .nav-link.active {
+            border-left-color: var(--text-accent);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem 4rem;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* --- Typography --- */
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.025em; }
+        h2 { font-size: 1.75rem; margin-top: 3rem; margin-bottom: 1.5rem; color: var(--text-main); border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem; }
+        h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-accent); }
+        p { line-height: 1.7; color: var(--text-muted); margin-bottom: 1.5rem; }
+        
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: var(--text-accent);
+            font-size: 0.9em;
+        }
+
+        /* --- Cards & Panels --- */
+        .info-panel {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-panel strong { color: var(--text-accent); }
+
+        /* --- Timeline (Logic Flow) --- */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 2px;
+            background: var(--border-subtle);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-body);
+            border: 2px solid var(--text-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--text-accent);
+        }
+
+        .timeline-title { font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem; }
+        .timeline-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* --- Styled Table --- */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        
+        th {
+            background: #0f172a;
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            vertical-align: top;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* --- Badges --- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .badge-401 { background: rgba(251, 191, 36, 0.15); color: var(--color-warning); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .badge-500 { background: rgba(244, 63, 94, 0.15); color: var(--color-error); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-code { background: rgba(255,255,255,0.1); color: #fff; font-family: monospace; }
+
+        /* --- Code Window --- */
+        .code-window {
+            background: var(--bg-code);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .window-header {
+            background: #1e293b;
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #22c55e; }
+
+        .code-content {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        .kwd { color: #c678dd; } /* Keyword */
+        .str { color: #98c379; } /* String */
+        .cls { color: #e5c07b; } /* Class */
+        .fnc { color: #61afef; } /* Function */
+        .cmt { color: #5c6370; font-style: italic; } /* Comment */
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="brand">
+            <span>RCAM</span> AUTH
+        </div>
+        <a href="#intro" class="nav-link active">Introdução</a>
+        <a href="#logic" class="nav-link">Lógica de Validação</a>
+        <a href="#errors" class="nav-link">Catálogo de Erros</a>
+        <a href="#integration" class="nav-link">Integração (Python)</a>
+        
+        <div class="sidebar-footer">
+            v1.0.4 &bull; Protected API
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <section id="intro">
+                <h1>Documentação do Validador</h1>
+                <p>O <strong>RcamAuthTokenValidator</strong> é um middleware de segurança projetado para ecossistemas Django Rest Framework. Ele orquestra a validação de JWTs, verificação de status de usuário e renovação automática de sessões (refresh token).</p>
+                
+                <div class="info-panel">
+                    <strong>✨ Feature Principal:</strong> Renovação transparente. Se o Access Token expirar, o sistema tenta renová-lo automaticamente usando o Refresh Token associado, sem exigir ação do usuário final.
+                </div>
+            </section>
+
+            <section id="logic">
+                <h2>Fluxo de Execução</h2>
+                <p>Abaixo detalhamos o caminho crítico que cada requisição percorre ao passar pelo validador:</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-title">1. Interceptação do Header</div>
+                        <div class="timeline-desc">O sistema captura o cabeçalho <code>Authorization</code> e verifica a presença do prefixo "Bearer".</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">2. Busca no Banco (UserToken)</div>
+                        <div class="timeline-desc">Localiza o token na tabela personalizada <code>UserToken</code>. Tokens fora da whitelist são rejeitados imediatamente.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">3. Validação Hierárquica</div>
+                        <div class="timeline-desc">Verifica três níveis de permissão: Token Ativo → Usuário Ativo → Usuário Staff (Admin).</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">4. Verificação JWT & Auto-Refresh</div>
+                        <div class="timeline-desc">Se o JWT expirou, o sistema invoca o método <code>validToken()</code> para tentar gerar um novo par de chaves usando o Refresh Token.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="errors">
+                <h2>Catálogo de Erros</h2>
+                <p>Todas as falhas são capturadas e padronizadas na propriedade <code>self.strErr</code>. Utilize esta tabela para debugging.</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="25%">Código Interno</th>
+                                <th width="20%">Status HTTP</th>
+                                <th>Diagnóstico e Solução</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado [-1]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Header Ausente.</strong> O cliente não enviou o cabeçalho Authorization.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado [0]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Prefixo Inválido.</strong> O token deve iniciar com a string "Bearer".</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado -[1]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Formato Malformado.</strong> O header contém espaços extras ou caracteres inválidos no split.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado -[2]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Token Desconhecido.</strong> O JWT é válido criptograficamente, mas não existe na tabela <code>UserToken</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado [2]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Sessão Revogada.</strong> O token foi marcado como inativo (logout forçado) pelo admin.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado [3]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Usuário Banido.</strong> O usuário associado ao token está com <code>is_active=False</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">não autorizado [4]</span></td>
+                                <td><span class="badge badge-401">401 Unauthorized</span></td>
+                                <td><strong>Permissão Insuficiente.</strong> O usuário não possui flag <code>is_staff</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-code">Erro interno...</span></td>
+                                <td><span class="badge badge-500">500 Server Error</span></td>
+                                <td><strong>Exception Não Tratada.</strong> Falha genérica (banco de dados offline, erro de sintaxe). Verificar logs do servidor.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="integration">
+                <h2>Exemplo de Implementação</h2>
+                <p>Abaixo, o padrão recomendado de uso com <strong>Type Hinting</strong> explícito e propagação de erros para a classe pai.</p>
+
+                <div class="code-window">
+                    <div class="window-header">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                        <span style="margin-left: 10px; font-size: 0.8rem; color: #64748b;">auth_controller.py</span>
+                    </div>
+                    <div class="code-content">
+<span class="kwd">from</span> .auth <span class="kwd">import</span> RcamAuthTokenValidator
+
+<span class="cmt"># Exemplo dentro de um método de classe (Controller ou View)</span>
+<span class="kwd">def</span> <span class="fnc">check_permissions</span>(<span class="kwd">self</span>, request) -> <span class="kwd">bool</span>:
+    
+    <span class="cmt"># 1. Instância com Type Hinting explícito</span>
+    instanceAuthToken: <span class="cls">RcamAuthTokenValidator</span> = <span class="cls">RcamAuthTokenValidator</span>()
+
+    <span class="cmt"># 2. Executa validação. Se falhar, propaga o erro para a instância atual</span>
+    <span class="kwd">if not</span> instanceAuthToken.execute(request):
+        <span class="kwd">self</span>.strErr = instanceAuthToken.strErr
+        <span class="kwd">self</span>.status = instanceAuthToken.status
+        <span class="kwd">return False</span>
+
+    <span class="cmt"># 3. (Opcional) Verifica se o token foi renovado automaticamente</span>
+    <span class="kwd">if</span> instanceAuthToken.newRefreshtoken:
+        <span class="cmt"># Lógica para atualizar o header de resposta, se necessário</span>
+        <span class="fnc">print</span>(<span class="str">f"Token renovado: {instanceAuthToken.token}"</span>)
+
+    <span class="kwd">return True</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Simples script para ativar o link da sidebar ao rolar
+        const links = document.querySelectorAll('.nav-link');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                links.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

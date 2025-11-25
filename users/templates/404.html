@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página não Encontrada</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: radial-gradient(circle at top, #1f1f1f, #0d0d0d);
+            color: #e4e4e4;
+            font-family: "Poppins", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 9rem;
+            font-weight: 700;
+            letter-spacing: -3px;
+            background: linear-gradient(135deg, #ffffff, #ff8888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: -10px;
+        }
+
+        p {
+            font-size: 1.4rem;
+            font-weight: 300;
+            opacity: 0.85;
+            margin-bottom: 30px;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            color: #ffffff;
+            background: linear-gradient(135deg, #4bffb5, #2ce89c);
+            box-shadow: 0 0 15px rgba(76, 255, 181, 0.4);
+            transition: 0.3s ease-in-out;
+        }
+
+        a:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 20px rgba(76, 255, 181, 0.7);
+        }
+
+     
+
+        .bg-lines::before,
+        .bg-lines::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 0,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+        }
+
+        .bg-lines::after {
+            animation-direction: reverse;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-lines"></div>
+
+    <div class="container">
+        <h1>404</h1>
+        <p>Oops... a página que você tentou acessar não foi encontrada.</p>
+    </div>
+</body>
+</html>
